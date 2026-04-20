@@ -1,0 +1,1329 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>destination.com</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Outfit:wght@200;300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+
+/* ─── THEME TOKENS ─── */
+[data-theme="dark"]{
+  --bg:#000000;--bg2:#0a0a0a;--bg3:#111114;
+  --surface:rgba(255,255,255,0.04);--surface2:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.09);--border-hi:rgba(255,255,255,0.16);
+  --text:#f5f5f7;--text2:rgba(245,245,247,0.65);--text3:rgba(245,245,247,0.35);
+  --accent:#0a84ff;--accent-soft:rgba(10,132,255,0.12);
+  --green:#30d158;--green-soft:rgba(48,209,88,0.12);
+  --gold:#ffd60a;--gold-soft:rgba(255,214,10,0.1);
+  --coral:#ff453a;--coral-soft:rgba(255,69,58,0.1);
+  --purple:#bf5af2;--purple-soft:rgba(191,90,242,0.1);
+  --nav-bg:rgba(0,0,0,0.8);
+  --ticker-bg:rgba(10,10,10,0.95);
+  --shadow:0 1px 0 rgba(255,255,255,0.06);
+}
+[data-theme="light"]{
+  --bg:#ffffff;--bg2:#f5f5f7;--bg3:#ebebeb;
+  --surface:rgba(0,0,0,0.04);--surface2:rgba(0,0,0,0.06);
+  --border:rgba(0,0,0,0.1);--border-hi:rgba(0,0,0,0.18);
+  --text:#1d1d1f;--text2:rgba(29,29,31,0.65);--text3:rgba(29,29,31,0.35);
+  --accent:#0071e3;--accent-soft:rgba(0,113,227,0.1);
+  --green:#28a745;--green-soft:rgba(40,167,69,0.1);
+  --gold:#b8860b;--gold-soft:rgba(184,134,11,0.1);
+  --coral:#d93025;--coral-soft:rgba(217,48,37,0.1);
+  --purple:#7b2d8b;--purple-soft:rgba(123,45,139,0.1);
+  --nav-bg:rgba(255,255,255,0.85);
+  --ticker-bg:rgba(245,245,247,0.97);
+  --shadow:0 1px 0 rgba(0,0,0,0.08);
+}
+
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Outfit',sans-serif;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;cursor:none;
+  -webkit-font-smoothing:antialiased;
+  transition:background .4s,color .4s;
+}
+
+/* ─── CURSOR ─── */
+#cur-ring{
+  position:fixed;z-index:9999;pointer-events:none;
+  width:32px;height:32px;border-radius:50%;
+  border:1px solid var(--accent);
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,border-color .2s,opacity .25s;
+}
+#cur-dot{
+  position:fixed;z-index:10000;pointer-events:none;
+  width:4px;height:4px;border-radius:50%;
+  background:var(--text);transform:translate(-50%,-50%);
+  transition:transform .08s;
+}
+
+/* ─── CURSOR-LOCAL PARTICLE CANVAS ─── */
+#particle-canvas{
+  position:fixed;inset:0;z-index:1;
+  pointer-events:none;opacity:1;
+}
+
+/* ─── NAV ─── */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:500;
+  height:52px;
+  background:var(--nav-bg);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border-bottom:.5px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 2.5rem;
+  transition:background .4s;
+}
+#nav-logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:1.15rem;font-weight:300;letter-spacing:.06em;
+  color:var(--text);text-decoration:none;
+}
+#nav-logo span{color:var(--accent);}
+.nav-center{display:flex;align-items:center;gap:2rem;}
+.nav-link{
+  font-size:.8rem;color:var(--text2);text-decoration:none;
+  letter-spacing:.01em;font-weight:300;cursor:pointer;
+  transition:color .15s;border:none;background:none;
+  font-family:'Outfit',sans-serif;
+}
+.nav-link:hover{color:var(--text);}
+.nav-right{display:flex;align-items:center;gap:1rem;}
+
+/* Theme toggle */
+#theme-toggle{
+  width:36px;height:20px;border-radius:10px;
+  background:var(--surface2);border:.5px solid var(--border);
+  position:relative;cursor:pointer;transition:background .3s;
+  flex-shrink:0;
+}
+#theme-toggle::after{
+  content:'';position:absolute;top:2px;left:2px;
+  width:15px;height:15px;border-radius:50%;
+  background:var(--text);transition:transform .3s,background .3s;
+}
+[data-theme="light"] #theme-toggle::after{transform:translateX(16px);}
+#theme-label{font-size:.7rem;color:var(--text3);letter-spacing:.06em;
+  text-transform:uppercase;font-family:'DM Mono',monospace;}
+
+/* Live flights btn */
+#flights-btn{
+  display:flex;align-items:center;gap:6px;
+  background:var(--accent-soft);color:var(--accent);
+  border:.5px solid rgba(10,132,255,.2);
+  padding:.38rem 1rem;border-radius:100px;
+  font-size:.75rem;font-weight:500;cursor:pointer;
+  font-family:'Outfit',sans-serif;transition:all .2s;
+  letter-spacing:.01em;
+}
+#flights-btn:hover{background:rgba(10,132,255,.2);}
+.flights-dot{width:5px;height:5px;background:var(--accent);border-radius:50%;
+  animation:pulse 2s infinite;}
+
+/* ─── SLEEP SCREEN ─── */
+#sleep{
+  position:fixed;inset:0;z-index:400;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--bg);transition:opacity 1.2s ease;pointer-events:none;
+}
+#sleep.gone{opacity:0;pointer-events:none;}
+#sleep-logo{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(3rem,7vw,5.5rem);font-weight:300;
+  letter-spacing:-.02em;color:var(--text);margin-bottom:2rem;
+}
+#sleep-logo em{font-style:italic;color:var(--accent);}
+#sleep-hint{
+  font-size:.7rem;letter-spacing:.25em;font-weight:300;
+  color:var(--text3);text-transform:uppercase;
+  animation:breathe 3.5s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{opacity:.2}50%{opacity:.7}}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.65)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+
+/* ─── PAGE ─── */
+#page{
+  position:relative;z-index:10;
+  padding:80px 0 160px;
+  opacity:0;transition:opacity .9s;
+}
+#page.show{opacity:1;}
+
+/* ─── HERO ─── */
+#hero{
+  text-align:center;
+  padding:5rem 2rem 4rem;
+  max-width:860px;margin:0 auto;
+}
+#hero h1{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(2.8rem,6vw,5rem);
+  font-weight:300;line-height:1.08;letter-spacing:-.03em;
+  color:var(--text);margin-bottom:1.2rem;
+}
+#hero h1 em{font-style:italic;color:var(--accent);}
+#hero p{font-size:1rem;color:var(--text2);font-weight:300;line-height:1.65;max-width:480px;margin:0 auto;}
+
+/* ─── INPUT SECTION ─── */
+.section{max-width:800px;margin:0 auto;padding:0 2rem;}
+#input-wrap{
+  background:var(--bg2);
+  border:.5px solid var(--border-hi);
+  border-radius:20px;overflow:hidden;
+  box-shadow:0 0 0 .5px var(--border);
+  transition:border-color .3s,box-shadow .3s,background .4s;
+}
+#input-wrap:focus-within{
+  border-color:rgba(10,132,255,.35);
+  box-shadow:0 0 0 3px rgba(10,132,255,.08);
+}
+.iw-header{
+  padding:1rem 1.4rem .7rem;
+  display:flex;align-items:center;gap:10px;
+  border-bottom:.5px solid var(--border);
+}
+.bot-av{
+  width:28px;height:28px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--purple));
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;font-weight:600;color:#fff;flex-shrink:0;
+}
+.iw-title{font-size:.82rem;font-weight:400;color:var(--text);}
+.iw-sub{font-size:.65rem;color:var(--text3);margin-top:1px;font-family:'DM Mono',monospace;}
+.iw-label{
+  padding:.9rem 1.4rem .35rem;
+  font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text3);display:flex;align-items:center;gap:7px;
+  font-family:'DM Mono',monospace;
+}
+#situation-ta{
+  width:100%;padding:.4rem 1.4rem 1rem;
+  font-family:'Outfit',sans-serif;font-size:1rem;
+  color:var(--text);background:transparent;
+  border:none;outline:none;resize:none;line-height:1.65;min-height:90px;
+}
+#situation-ta::placeholder{color:var(--text3);}
+.iw-footer{
+  border-top:.5px solid var(--border);padding:.75rem 1.4rem;
+  display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;
+}
+#char-count{font-family:'DM Mono',monospace;font-size:.62rem;color:var(--text3);}
+#submit-btn{
+  background:var(--accent);color:#fff;border:none;
+  padding:.5rem 1.5rem;border-radius:100px;
+  font-family:'Outfit',sans-serif;font-size:.84rem;font-weight:500;
+  cursor:pointer;transition:all .2s;letter-spacing:.01em;
+}
+#submit-btn:hover:not(:disabled){filter:brightness(1.1);transform:scale(1.02);}
+#submit-btn:disabled{background:var(--surface2);color:var(--text3);cursor:not-allowed;transform:none;}
+
+/* Quick pills */
+#quick-pills{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem;}
+.qp{
+  background:var(--surface);border:.5px solid var(--border);
+  color:var(--text2);font-size:.74rem;padding:.3rem .85rem;
+  border-radius:100px;cursor:pointer;transition:all .15s;
+  font-family:'Outfit',sans-serif;white-space:nowrap;
+}
+.qp:hover{background:var(--accent-soft);border-color:rgba(10,132,255,.3);color:var(--accent);}
+
+/* ─── LOADING ─── */
+#loading{display:none;text-align:center;padding:2.5rem 1rem;}
+#loading.show{display:block;}
+.ld{display:flex;gap:6px;justify-content:center;margin-bottom:.9rem;}
+.ld span{width:7px;height:7px;background:var(--accent);border-radius:50%;animation:ld 1.2s infinite;}
+.ld span:nth-child(2){animation-delay:.18s;}.ld span:nth-child(3){animation-delay:.36s;}
+@keyframes ld{0%,80%,100%{transform:scale(.6);opacity:.3}40%{transform:scale(1);opacity:1}}
+#loading p{font-size:.84rem;color:var(--text2);font-weight:300;}
+
+/* ─── ERROR ─── */
+#err-box{display:none;background:var(--coral-soft);border:.5px solid rgba(255,69,58,.2);
+  border-radius:12px;padding:.9rem 1.1rem;font-size:.83rem;color:var(--coral);
+  margin-top:1.2rem;}
+#err-box.show{display:block;}
+
+/* ─── RESULTS ─── */
+#results{display:none;margin-top:2.5rem;padding:0 2rem;max-width:800px;margin-left:auto;margin-right:auto;animation:fadeUp .5s ease both;}
+#results.show{display:block;}
+
+.sec-head{
+  font-size:.6rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--text3);font-family:'DM Mono',monospace;
+  display:flex;align-items:center;gap:10px;margin-bottom:1rem;
+}
+.sec-head::after{content:'';flex:1;height:.5px;background:var(--border);}
+
+/* Summary */
+#ai-sum{background:var(--accent-soft);border:.5px solid rgba(10,132,255,.18);
+  border-radius:14px;padding:1rem 1.2rem;margin-bottom:2rem;
+  font-size:.9rem;line-height:1.7;color:var(--text2);font-weight:300;}
+
+/* Best card */
+#best-card{background:var(--bg2);border:.5px solid var(--border-hi);
+  border-radius:18px;padding:1.75rem;margin-bottom:2rem;
+  position:relative;overflow:hidden;transition:background .4s;}
+#best-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,var(--accent),var(--green));}
+.best-badge{display:inline-flex;align-items:center;gap:5px;
+  background:var(--accent-soft);color:var(--accent);
+  font-size:.6rem;letter-spacing:.07em;padding:2px 9px;
+  border-radius:100px;margin-bottom:1rem;text-transform:uppercase;
+  font-family:'DM Mono',monospace;}
+#best-title{font-family:'Cormorant Garamond',serif;font-size:1.8rem;
+  font-weight:300;color:var(--text);margin-bottom:.6rem;line-height:1.2;}
+#best-desc{font-size:.86rem;color:var(--text2);line-height:1.7;margin-bottom:1.1rem;font-weight:300;}
+#best-meta{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:1.1rem;}
+.mchip{background:var(--surface2);border-radius:10px;padding:.4rem .85rem;}
+.mchip-l{font-size:.55rem;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;font-family:'DM Mono',monospace;}
+.mchip-v{font-size:.84rem;font-weight:400;color:var(--text);margin-top:2px;}
+#best-hl{list-style:none;}
+#best-hl li{display:flex;align-items:flex-start;gap:7px;font-size:.83rem;
+  color:var(--text2);padding:.35rem 0;
+  border-bottom:.5px solid var(--border);line-height:1.55;}
+#best-hl li:last-child{border-bottom:none;}
+#best-hl li::before{content:'✓';color:var(--green);flex-shrink:0;font-size:.75rem;margin-top:2px;}
+.conf{font-size:.58rem;padding:1px 8px;border-radius:100px;font-family:'DM Mono',monospace;
+  text-transform:uppercase;letter-spacing:.05em;margin-left:8px;vertical-align:middle;}
+.ch{background:var(--green-soft);color:var(--green);}
+.cm{background:var(--gold-soft);color:var(--gold);}
+.cl{background:var(--coral-soft);color:var(--coral);}
+
+/* Alt grid */
+#alt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:10px;margin-bottom:2rem;}
+.acard{background:var(--bg2);border:.5px solid var(--border);
+  border-radius:14px;padding:1.1rem;transition:border-color .2s,background .4s;}
+.acard:hover{border-color:rgba(10,132,255,.3);}
+.abadge{font-size:.58rem;padding:2px 8px;border-radius:100px;
+  text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px;
+  display:inline-block;font-family:'DM Mono',monospace;}
+.bf{background:var(--accent-soft);color:var(--accent);}
+.bc{background:var(--green-soft);color:var(--green);}
+.bs{background:var(--purple-soft);color:var(--purple);}
+.bb{background:var(--gold-soft);color:var(--gold);}
+.atitle{font-size:.92rem;font-weight:400;color:var(--text);margin-bottom:3px;}
+.avia{font-size:.68rem;color:var(--text3);font-family:'DM Mono',monospace;margin-bottom:8px;}
+.astats{display:flex;gap:14px;margin-bottom:7px;}
+.asl{font-size:.56rem;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;font-family:'DM Mono',monospace;}
+.asv{font-size:.8rem;color:var(--text);margin-top:1px;}
+.ato{font-size:.76rem;color:var(--text2);line-height:1.55;
+  padding-top:8px;border-top:.5px solid var(--border);}
+
+/* Safety */
+#scard{background:var(--gold-soft);border:.5px solid rgba(255,214,10,.18);
+  border-radius:14px;padding:1rem 1.3rem;margin-bottom:2rem;}
+.shead{display:flex;align-items:center;gap:7px;margin-bottom:.8rem;}
+.stitle{font-size:.82rem;font-weight:400;color:var(--text);}
+.sitem{display:flex;align-items:flex-start;gap:7px;font-size:.8rem;
+  color:var(--text2);padding:.32rem 0;border-bottom:.5px solid var(--border);line-height:1.5;}
+.sitem:last-child{border-bottom:none;}
+.sitem::before{content:'→';color:var(--gold);flex-shrink:0;font-size:.75rem;margin-top:2px;}
+
+/* Articles */
+#art-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+  gap:10px;margin-bottom:2rem;}
+.artcard{background:var(--bg2);border:.5px solid var(--border);
+  border-radius:14px;padding:1rem;cursor:pointer;transition:border-color .2s,background .4s;}
+.artcard:hover{border-color:rgba(191,90,242,.3);}
+.artcat{font-size:.57rem;letter-spacing:.07em;text-transform:uppercase;font-weight:500;
+  padding:2px 7px;border-radius:100px;margin-bottom:7px;display:inline-block;font-family:'DM Mono',monospace;}
+.artcat.sa{background:var(--coral-soft);color:var(--coral);}
+.artcat.bu{background:var(--green-soft);color:var(--green);}
+.artcat.pl{background:var(--accent-soft);color:var(--accent);}
+.artcat.cu{background:var(--purple-soft);color:var(--purple);}
+.artcat.ad{background:var(--gold-soft);color:var(--gold);}
+.arttitle{font-size:.85rem;color:var(--text);line-height:1.4;margin-bottom:5px;}
+.artdesc{font-size:.74rem;color:var(--text3);line-height:1.5;margin-bottom:5px;}
+.artread{font-size:.62rem;color:var(--text3);font-family:'DM Mono',monospace;}
+
+/* Community */
+#comm{background:var(--bg2);border:.5px solid var(--border);
+  border-radius:18px;padding:1.4rem;margin-bottom:2rem;transition:background .4s;}
+.comm-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;}
+.comm-lbl{font-size:.82rem;color:var(--text2);}
+.comm-badge{background:var(--green);color:#000;font-size:.65rem;
+  font-weight:600;padding:2px 10px;border-radius:100px;}
+#comm-insight{font-size:.86rem;color:var(--text2);line-height:1.7;margin-bottom:.9rem;font-weight:300;}
+.ctip{display:flex;gap:7px;font-size:.78rem;color:var(--text3);
+  padding:.32rem 0;border-bottom:.5px solid var(--border);line-height:1.45;}
+.ctip:last-child{border-bottom:none;}
+.ctip::before{content:'—';color:var(--text3);}
+#cnct-btn{margin-top:1rem;background:var(--surface2);color:var(--text2);
+  border:.5px solid var(--border);padding:.45rem 1.1rem;border-radius:100px;
+  font-size:.76rem;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;}
+#cnct-btn:hover{background:var(--surface);color:var(--text);}
+
+#disc{font-size:.68rem;color:var(--text3);text-align:center;margin-top:.5rem;line-height:1.55;}
+
+/* ─── ML PANELS ─── */
+#ml-sec{margin-top:3rem;padding:0 2rem;max-width:800px;margin-left:auto;margin-right:auto;}
+.ml-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px;margin-top:.75rem;}
+.mlcard{background:var(--bg2);border:.5px solid var(--border);
+  border-radius:14px;padding:1.2rem;transition:background .4s;}
+.mlh{display:flex;align-items:flex-start;gap:9px;margin-bottom:.9rem;}
+.mlt{font-size:.84rem;font-weight:400;color:var(--text);margin-bottom:2px;}
+.mls{font-size:.65rem;color:var(--text3);font-family:'DM Mono',monospace;}
+.wrow{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.wi{flex:1;min-width:75px;}
+.wl{display:flex;justify-content:space-between;font-size:.65rem;color:var(--text3);margin-bottom:3px;}
+.wv{color:var(--accent);font-weight:500;}
+input[type=range]{width:100%;accent-color:var(--accent);height:3px;cursor:pointer;}
+.orow{display:flex;align-items:flex-start;gap:9px;padding:7px 9px;
+  margin-bottom:5px;border-radius:9px;background:var(--surface);
+  border-left:2px solid transparent;transition:border-color .3s;}
+.orow.top{border-left-color:var(--accent);}
+.ork{font-size:.8rem;font-weight:500;color:var(--accent);min-width:18px;padding-top:1px;}
+.orn{font-size:.76rem;color:var(--text);margin-bottom:4px;}
+.bg{flex:1;}
+.brow{margin-bottom:3px;}
+.brh{display:flex;justify-content:space-between;font-size:.58rem;color:var(--text3);margin-bottom:1px;}
+.bt{background:var(--surface2);border-radius:3px;height:3px;overflow:hidden;}
+.bf2{height:100%;border-radius:3px;transition:width .6s;}
+.osn{font-size:1rem;font-weight:500;color:var(--accent);}
+.osl{font-size:.52rem;color:var(--text3);text-transform:uppercase;letter-spacing:.04em;}
+
+/* Sim */
+.simwrap{background:var(--surface);border-radius:9px;overflow:hidden;margin-bottom:9px;padding:4px;}
+.trow{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:.5px solid var(--border);}
+.trow:last-child{border-bottom:none;}
+.tav{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:.6rem;font-weight:600;flex-shrink:0;}
+.tn{font-size:.78rem;color:var(--text);}
+.tr2{font-size:.62rem;color:var(--text3);font-family:'DM Mono',monospace;}
+.sbadge{font-size:.6rem;padding:1px 6px;border-radius:100px;}
+.tstat{font-size:.58rem;color:var(--text3);margin-top:1px;}
+
+/* Rec */
+.frow{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:9px;}
+.fb{background:transparent;border:.5px solid var(--border);color:var(--text3);
+  padding:2px 9px;border-radius:100px;font-size:.65rem;cursor:pointer;
+  font-family:'Outfit',sans-serif;transition:all .15s;}
+.fb.on{background:var(--accent-soft);border-color:rgba(10,132,255,.3);color:var(--accent);}
+.rrow{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:.5px solid var(--border);}
+.rrow:last-child{border-bottom:none;}
+.rrk{font-size:.62rem;color:var(--text3);min-width:16px;padding-top:2px;}
+.rsc{display:flex;gap:7px;flex-wrap:wrap;margin-top:2px;}
+.rse{font-size:.62rem;color:var(--text3);}
+.rrd{font-size:.6rem;color:var(--text3);font-family:'DM Mono',monospace;white-space:nowrap;padding-top:2px;}
+
+/* ─── LIVE TRAVELLERS PANEL ─── */
+#live-travelers{
+  max-width:800px;margin:2rem auto 0;padding:0 2rem;
+  animation:fadeUp .5s ease both;
+}
+.ltcard{
+  background:var(--bg2);border:.5px solid var(--border);
+  border-radius:18px;overflow:hidden;transition:background .4s;
+}
+.ltheader{
+  padding:1rem 1.4rem;border-bottom:.5px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.lttitle{font-size:.84rem;font-weight:400;color:var(--text);}
+.lt-live{display:flex;align-items:center;gap:6px;font-family:'DM Mono',monospace;
+  font-size:.62rem;color:var(--green);}
+.lt-entries{padding:.5rem 0;}
+.lt-row{
+  display:flex;align-items:center;gap:1rem;
+  padding:.7rem 1.4rem;border-bottom:.5px solid var(--border);
+  transition:background .15s;
+}
+.lt-row:last-child{border-bottom:none;}
+.lt-row:hover{background:var(--surface);}
+.lt-av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;
+  justify-content:center;font-size:.65rem;font-weight:600;flex-shrink:0;}
+.lt-info{flex:1;}
+.lt-name{font-size:.82rem;color:var(--text);font-weight:400;}
+.lt-route{font-size:.68rem;color:var(--text3);font-family:'DM Mono',monospace;margin-top:1px;}
+.lt-status{display:flex;align-items:center;gap:5px;font-size:.68rem;color:var(--text2);}
+.lt-dot{width:5px;height:5px;border-radius:50%;background:var(--green);flex-shrink:0;}
+.lt-match{
+  background:var(--accent-soft);color:var(--accent);
+  font-size:.62rem;padding:2px 8px;border-radius:100px;
+  font-family:'DM Mono',monospace;white-space:nowrap;
+}
+.lt-connect{
+  background:transparent;border:.5px solid var(--border);color:var(--text2);
+  padding:.25rem .75rem;border-radius:100px;font-size:.7rem;cursor:pointer;
+  font-family:'Outfit',sans-serif;transition:all .15s;
+}
+.lt-connect:hover{background:var(--accent-soft);border-color:rgba(10,132,255,.3);color:var(--accent);}
+
+/* ─── FLIGHTS MODAL ─── */
+#flights-modal{
+  position:fixed;inset:0;z-index:600;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(14px);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .35s;
+}
+#flights-modal.open{opacity:1;pointer-events:all;}
+#flights-panel{
+  width:900px;max-width:96vw;height:82vh;
+  background:var(--bg2);border:.5px solid var(--border-hi);
+  border-radius:22px;overflow:hidden;
+  display:flex;flex-direction:column;
+  transform:scale(.96) translateY(20px);
+  transition:transform .35s;
+  box-shadow:0 40px 80px rgba(0,0,0,.5);
+}
+#flights-modal.open #flights-panel{transform:scale(1) translateY(0);}
+.fp-head{
+  padding:1rem 1.4rem;border-bottom:.5px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.fp-title{font-size:.9rem;font-weight:500;color:var(--text);}
+.fp-sub{font-size:.65rem;color:var(--text3);font-family:'DM Mono',monospace;margin-top:2px;}
+.fp-controls{display:flex;align-items:center;gap:.75rem;}
+.fp-close{
+  width:28px;height:28px;border-radius:50%;
+  background:var(--surface2);border:.5px solid var(--border);
+  color:var(--text2);cursor:pointer;font-size:.85rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:background .2s;font-family:inherit;
+}
+.fp-close:hover{background:var(--surface);}
+.fp-tabs{display:flex;gap:0;border-bottom:.5px solid var(--border);flex-shrink:0;}
+.fp-tab{
+  padding:.65rem 1.2rem;font-size:.76rem;color:var(--text3);
+  border-bottom:1.5px solid transparent;cursor:pointer;
+  transition:all .15s;font-family:'Outfit',sans-serif;
+  background:none;border-top:none;border-left:none;border-right:none;
+}
+.fp-tab.on{color:var(--accent);border-bottom-color:var(--accent);}
+.fp-body{flex:1;overflow:hidden;position:relative;}
+.fp-iframe-wrap{width:100%;height:100%;}
+.fp-iframe-wrap iframe{width:100%;height:100%;border:none;}
+/* Map panel (our own) */
+.fp-map-panel{width:100%;height:100%;display:flex;flex-direction:column;}
+.fp-map-canvas-wrap{flex:1;position:relative;background:#000;}
+#fp-canvas{width:100%;height:100%;}
+.fp-flights-list{
+  height:140px;overflow-y:auto;border-top:.5px solid var(--border);
+  flex-shrink:0;
+}
+.fpl-row{
+  display:flex;align-items:center;gap:1rem;
+  padding:.5rem 1rem;border-bottom:.5px solid var(--border);
+  font-size:.76rem;cursor:pointer;transition:background .15s;
+}
+.fpl-row:hover{background:var(--surface);}
+.fpl-fn{font-family:'DM Mono',monospace;color:var(--accent);min-width:60px;}
+.fpl-route{color:var(--text);flex:1;}
+.fpl-alt{color:var(--text3);}
+.fpl-speed{color:var(--text3);}
+.fpl-stat{font-size:.6rem;padding:1px 7px;border-radius:100px;background:var(--green-soft);color:var(--green);}
+
+/* Dest modal */
+#dest-modal{position:fixed;inset:0;z-index:700;display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(14px);opacity:0;pointer-events:none;transition:opacity .35s;}
+#dest-modal.open{opacity:1;pointer-events:all;}
+#dest-card{width:680px;max-width:94vw;max-height:88vh;overflow-y:auto;
+  background:var(--bg2);border:.5px solid var(--border-hi);border-radius:22px;
+  transform:scale(.96) translateY(20px);transition:transform .35s,background .4s;
+  box-shadow:0 40px 80px rgba(0,0,0,.5);}
+#dest-modal.open #dest-card{transform:scale(1) translateY(0);}
+#dest-img-wrap{position:relative;height:240px;overflow:hidden;border-radius:22px 22px 0 0;}
+#dest-img{width:100%;height:100%;object-fit:cover;filter:brightness(.8);transition:transform 8s;}
+#dest-modal.open #dest-img{transform:scale(1.05);}
+.di-overlay{position:absolute;inset:0;background:linear-gradient(transparent 45%,var(--bg2));}
+#dest-lbl{position:absolute;top:1rem;left:1.2rem;font-family:'DM Mono',monospace;
+  font-size:.6rem;letter-spacing:.12em;color:rgba(255,255,255,.6);
+  background:rgba(0,0,0,.45);padding:3px 9px;border-radius:100px;
+  border:.5px solid rgba(255,255,255,.12);text-transform:uppercase;}
+#dest-cls{position:absolute;top:1rem;right:1.2rem;width:30px;height:30px;border-radius:50%;
+  background:rgba(0,0,0,.5);border:.5px solid rgba(255,255,255,.15);
+  color:#fff;font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  font-family:inherit;transition:background .2s;line-height:1;}
+#dest-cls:hover{background:rgba(255,255,255,.15);}
+#dest-body2{padding:1.5rem 1.7rem 1.7rem;}
+#dest-name{font-family:'Cormorant Garamond',serif;font-size:1.9rem;font-weight:300;
+  color:var(--text);margin-bottom:.3rem;line-height:1.2;}
+#dest-ctry{font-size:.65rem;color:var(--accent);letter-spacing:.1em;
+  text-transform:uppercase;font-family:'DM Mono',monospace;margin-bottom:1rem;}
+#dest-info{font-size:.84rem;line-height:1.75;color:var(--text2);font-weight:300;margin-bottom:1.2rem;}
+#dest-tips-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1.2rem;}
+.tip-chip{background:var(--surface);border:.5px solid var(--border);
+  border-radius:10px;padding:.6rem .85rem;display:flex;align-items:flex-start;gap:7px;}
+.tip-icon{font-size:.82rem;flex-shrink:0;margin-top:1px;}
+.tip-body2{font-size:.73rem;color:var(--text2);line-height:1.5;}
+.tip-body2 strong{color:var(--text);font-weight:400;display:block;margin-bottom:1px;}
+#dest-warn{background:var(--gold-soft);border:.5px solid rgba(255,214,10,.2);
+  border-radius:10px;padding:.8rem 1rem;font-size:.77rem;color:var(--gold);
+  line-height:1.6;display:flex;gap:8px;}
+
+/* ─── ATTRACTION STRIP ─── */
+#att-strip{
+  position:fixed;bottom:48px;left:0;right:0;z-index:30;
+  display:flex;justify-content:center;gap:10px;padding:0 2rem;
+  pointer-events:none;opacity:0;transition:opacity .6s .4s;
+}
+#att-strip.show{opacity:1;pointer-events:all;}
+.attcard{position:relative;width:130px;height:82px;border-radius:12px;overflow:hidden;
+  border:.5px solid var(--border);cursor:pointer;flex-shrink:0;
+  transition:transform .3s,border-color .3s,box-shadow .3s;}
+.attcard:hover{transform:translateY(-7px) scale(1.05);
+  border-color:rgba(10,132,255,.4);box-shadow:0 16px 32px rgba(0,0,0,.4);}
+.attcard img{width:100%;height:100%;object-fit:cover;filter:brightness(.7);transition:filter .3s,transform .4s;}
+.attcard:hover img{filter:brightness(.9);transform:scale(1.08);}
+.attlbl{position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(transparent,rgba(0,0,0,.75));
+  padding:.4rem .55rem;font-size:.62rem;color:#fff;}
+.atttag{font-size:.52rem;color:var(--accent);font-family:'DM Mono',monospace;
+  letter-spacing:.06em;display:block;margin-bottom:1px;}
+
+/* ─── NEWS TICKER ─── */
+#ticker-wrap{
+  position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:var(--ticker-bg);
+  border-top:.5px solid var(--border);
+  height:40px;display:flex;align-items:center;overflow:hidden;
+  transition:background .4s;
+}
+.ticker-label{
+  flex-shrink:0;padding:0 1rem;
+  font-size:.58rem;letter-spacing:.1em;text-transform:uppercase;
+  font-family:'DM Mono',monospace;font-weight:400;
+  color:#fff;background:var(--coral);height:100%;
+  display:flex;align-items:center;white-space:nowrap;
+}
+.ticker-track{flex:1;overflow:hidden;position:relative;height:100%;}
+.ticker-inner{
+  display:flex;align-items:center;height:100%;
+  white-space:nowrap;
+  animation:ticker 60s linear infinite;
+}
+@keyframes ticker{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.ticker-item{
+  display:inline-flex;align-items:center;gap:.6rem;
+  padding:0 2rem;font-size:.72rem;color:var(--text);font-weight:300;
+  border-right:.5px solid var(--border);height:100%;
+}
+.ticker-item .ti-dot{width:4px;height:4px;border-radius:50%;flex-shrink:0;}
+.ti-alert{color:var(--coral);}
+.ti-info{color:var(--accent);}
+.ti-ok{color:var(--green);}
+
+/* Ripple */
+.ripple{position:fixed;border-radius:50%;pointer-events:none;z-index:9;
+  border:.8px solid rgba(10,132,255,.35);
+  transform:translate(-50%,-50%) scale(0);animation:rip 1.1s ease-out forwards;}
+@keyframes rip{to{transform:translate(-50%,-50%) scale(4.5);opacity:0}}
+
+@media(max-width:640px){
+  #nav .nav-center{display:none;}
+  #att-strip .attcard:nth-child(n+4){display:none;}
+  #ml-sec{display:none;}
+  #live-travelers .lt-connect{display:none;}
+  .fp-tabs .fp-tab:not(.on){display:none;}
+}
+</style>
+</head>
+<body>
+
+<div id="cur-ring"></div>
+<div id="cur-dot"></div>
+<canvas id="particle-canvas"></canvas>
+
+<!-- Sleep -->
+<div id="sleep">
+  <div id="sleep-logo">destination<em>.</em>com</div>
+  <div id="sleep-hint">move to explore</div>
+</div>
+
+<!-- Nav -->
+<nav id="nav">
+  <a id="nav-logo" href="#">destination<span>.</span>com</a>
+  <div class="nav-center">
+    <button class="nav-link" onclick="scrollTo({top:0,behavior:'smooth'})">Route Planner</button>
+    <button class="nav-link" onclick="document.getElementById('live-travelers').scrollIntoView({behavior:'smooth'})">Live Travellers</button>
+    <button class="nav-link" onclick="document.getElementById('ml-sec').scrollIntoView({behavior:'smooth'})">ML Insights</button>
+  </div>
+  <div class="nav-right">
+    <span id="theme-label"></span>
+    <div id="theme-toggle" title="Toggle theme"></div>
+    <button id="flights-btn"><div class="flights-dot"></div>Live Flights</button>
+  </div>
+</nav>
+
+<!-- Page -->
+<div id="page">
+  <!-- Hero -->
+  <div id="hero">
+    <h1>Intelligent travel,<br><em>wherever you are.</em></h1>
+    <p>Describe your situation. Our AI finds the best routes, alternatives, safety guidance — and connects you with travellers on the same journey.</p>
+  </div>
+
+  <!-- Input -->
+  <div class="section" style="animation:fadeUp .8s .1s both;">
+    <div id="input-wrap">
+      <div class="iw-header">
+        <div class="bot-av">AI</div>
+        <div>
+          <div class="iw-title">Route Intelligence</div>
+          <div class="iw-sub">Routes · Safety · Community · Articles</div>
+        </div>
+      </div>
+      <div class="iw-label"><div class="flights-dot"></div>Describe your travel situation</div>
+      <textarea id="situation-ta" rows="4"
+        placeholder="e.g. Stuck in London Heathrow — all transatlantic flights cancelled due to airspace restrictions. Need New York JFK by tomorrow morning. Speed over cost…"></textarea>
+      <div class="iw-footer">
+        <span id="char-count">0 / 600</span>
+        <button id="submit-btn" disabled>Analyse Route →</button>
+      </div>
+    </div>
+    <div id="quick-pills">
+      <span class="qp">✈ London to NYC — airspace closure</span>
+      <span class="qp">💸 Budget: Tokyo to Sydney</span>
+      <span class="qp">🗺 Scenic NYC to San Francisco</span>
+      <span class="qp">👨‍👩‍👧‍👦 Family reroute — Dubai to Rome</span>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading">
+    <div class="ld"><span></span><span></span><span></span></div>
+    <p>Analysing routes, restrictions &amp; community signals…</p>
+  </div>
+
+  <!-- Error -->
+  <div id="err-box" class="section"></div>
+
+  <!-- Results -->
+  <div id="results">
+    <div id="ai-sum"></div>
+    <div class="sec-head">Best solution</div>
+    <div id="best-card">
+      <div class="best-badge">✦ Recommended</div>
+      <div id="best-title"></div>
+      <div id="best-desc"></div>
+      <div id="best-meta"></div>
+      <ul id="best-hl"></ul>
+    </div>
+    <div class="sec-head">Alternative routes</div>
+    <div id="alt-grid"></div>
+    <div class="sec-head">Safety guidance</div>
+    <div id="scard">
+      <div class="shead"><span>⚠</span><span class="stitle">AI safety recommendations</span></div>
+      <div id="slist"></div>
+    </div>
+    <div class="sec-head">Related articles</div>
+    <div id="art-grid"></div>
+    <div class="sec-head">Community insights</div>
+    <div id="comm">
+      <div class="comm-top">
+        <span class="comm-lbl">Travellers on similar routes</span>
+        <span class="comm-badge" id="comm-cnt">0 active</span>
+      </div>
+      <div id="comm-ins"></div>
+      <div id="comm-tips"></div>
+      <button id="cnct-btn">Connect with travellers (opt-in) →</button>
+    </div>
+    <div id="disc"></div>
+  </div>
+
+  <!-- ML Panels -->
+  <div id="ml-sec" style="display:none;">
+    <div style="padding:0 2rem;max-width:800px;margin:0 auto;">
+      <div class="sec-head" style="margin-bottom:.5rem;">ML Inference Panels</div>
+      <div class="ml-grid">
+        <div class="mlcard" id="ml-opt">
+          <div class="mlh"><span>⚡</span><div><div class="mlt">Route Optimizer</div><div class="mls">Dijkstra + transformer scoring</div></div></div>
+          <div class="wrow" id="wrow"></div>
+          <div id="orows"></div>
+        </div>
+        <div class="mlcard">
+          <div class="mlh"><span>🔗</span><div><div class="mlt">Similarity Matching</div><div class="mls">Cosine similarity · 768-dim embeddings</div></div></div>
+          <div class="simwrap"><svg id="sim-svg" width="100%" height="95" viewBox="0 0 320 95" style="display:block;"></svg></div>
+          <div id="sim-list"></div>
+        </div>
+        <div class="mlcard">
+          <div class="mlh"><span>📚</span><div><div class="mlt">Recommendation Engine</div><div class="mls">Collaborative filtering × BERT-512</div></div></div>
+          <div class="frow" id="rfilt"></div>
+          <div id="rlist"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Live Travellers -->
+  <div id="live-travelers">
+    <div style="max-width:800px;margin:0 auto;padding:0;">
+      <div class="sec-head" style="margin-bottom:1rem;">Live Travellers</div>
+      <div class="ltcard">
+        <div class="ltheader">
+          <div class="lttitle">Travellers on active routes right now</div>
+          <div class="lt-live"><div class="flights-dot"></div>Real-time</div>
+        </div>
+        <div class="lt-entries" id="lt-entries"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Attraction strip -->
+<div id="att-strip"></div>
+
+<!-- News Ticker -->
+<div id="ticker-wrap">
+  <div class="ticker-label">⚡ AIRSPACE</div>
+  <div class="ticker-track">
+    <div class="ticker-inner" id="ticker-inner"></div>
+  </div>
+</div>
+
+<!-- Flights Modal -->
+<div id="flights-modal">
+  <div id="flights-panel">
+    <div class="fp-head">
+      <div>
+        <div class="fp-title">Live Flight Tracker</div>
+        <div class="fp-sub">Real-time global flight data</div>
+      </div>
+      <div class="fp-controls">
+        <button class="fp-close" id="fp-close">✕</button>
+      </div>
+    </div>
+    <div class="fp-tabs">
+      <button class="fp-tab on" data-tab="fr24">FlightRadar24</button>
+      <button class="fp-tab" data-tab="map">Route Map</button>
+    </div>
+    <div class="fp-body">
+      <div id="tab-fr24" class="fp-iframe-wrap">
+        <iframe src="https://www.flightradar24.com/?airline=all" allowfullscreen title="FlightRadar24 Live Flights" loading="lazy"></iframe>
+      </div>
+      <div id="tab-map" class="fp-map-panel" style="display:none;">
+        <canvas id="fp-canvas"></canvas>
+        <div class="fp-flights-list" id="fp-flist"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Destination Modal -->
+<div id="dest-modal">
+  <div id="dest-card">
+    <div id="dest-img-wrap">
+      <img id="dest-img" src="" alt=""/>
+      <div class="di-overlay"></div>
+      <div id="dest-lbl">LAYOVER CITY</div>
+      <button id="dest-cls">✕</button>
+    </div>
+    <div id="dest-body2">
+      <div id="dest-name"></div>
+      <div id="dest-ctry"></div>
+      <div id="dest-info"></div>
+      <div id="dest-tips-grid"></div>
+      <div id="dest-warn"><span>⚠</span><span id="dest-wt"></span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════ DESTINATIONS ═══════ */
+const DESTS={
+  dubai:{name:"Dubai",country:"UAE · Middle East",img:"https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80",thumb:"https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=400&q=70",tag:"Iconic Skyline",info:"This is the place you go to for more about Dubai. If this is your layover, you can take a stroll around the Burj Khalifa district and grab a bite at a waterfront café. Be sure to head back to the airport 3 hours before your flight. Keep in mind to be cautious of scams — unlicensed taxi touts are common.",tips:[{icon:"🕌",t:"Burj Khalifa",b:"Observation deck with 360° views. Book online."},{icon:"🛍",t:"Dubai Mall",b:"Walking distance from metro. World's largest."},{icon:"🌊",t:"JBR Beach",b:"30 min by metro. Free public beach with cafés."},{icon:"🍽",t:"Local Eats",b:"Al Dhiyafa Road for authentic Emirati cuisine."}],warning:"Dress modestly in public. Photography of government buildings is prohibited. Use licensed RTA taxis only."},
+  tokyo:{name:"Tokyo",country:"Japan · East Asia",img:"https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80",thumb:"https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=400&q=70",tag:"Neon & Tradition",info:"This is the place you go to for more about Tokyo. If this is your layover, you can take a stroll through Shinjuku or Shibuya and grab a bite at a local ramen shop. Be sure to head back 3 hours before your flight.",tips:[{icon:"⛩",t:"Senso-ji",b:"Asakusa district. Stunning at dawn, open all hours."},{icon:"🌆",t:"Shibuya Crossing",b:"World's most famous pedestrian crossing."},{icon:"🍜",t:"Ramen Alley",b:"Shinjuku's Omoide Yokocho — tiny stalls, big flavour."},{icon:"🚄",t:"Narita Express",b:"55 min to city centre."}],warning:"Very safe but easy to get lost. Download offline maps. Cash is king at smaller spots."},
+  istanbul:{name:"Istanbul",country:"Turkey · Bosphorus",img:"https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=800&q=80",thumb:"https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&q=70",tag:"East Meets West",info:"This is the place you go to for more about Istanbul. If this is your layover, stroll along the Golden Horn and grab köfte or simit from a street vendor. Head back 3 hours before your flight. Beware carpet shop tours near Hagia Sophia.",tips:[{icon:"🕍",t:"Hagia Sophia",b:"UNESCO site. Free entry — cover shoulders."},{icon:"🛒",t:"Grand Bazaar",b:"World's oldest market. Always negotiate."},{icon:"⛵",t:"Bosphorus Ferry",b:"Cheapest way to cross two continents."},{icon:"☕",t:"Turkish Tea",b:"Any local çay bahçesi for authentic experience."}],warning:"Be firm declining street guides. Agree on taxi fares beforehand. Keep bags close in bazaars."},
+  singapore:{name:"Singapore",country:"Singapore · SEA",img:"https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=800&q=80",thumb:"https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=400&q=70",tag:"Garden City",info:"This is the place you go to for more about Singapore. Stroll through Gardens by the Bay and eat at a hawker centre for local food at unbeatable prices. Head back 3 hours before your flight — Changi is large.",tips:[{icon:"🌿",t:"Gardens by the Bay",b:"Supertree Grove free at ground level. Stunning at night."},{icon:"🦁",t:"Marina Bay Sands",b:"Rooftop pool (guests only) — lobby is free."},{icon:"🍢",t:"Hawker Centre",b:"Maxwell Food Centre near Chinatown."},{icon:"🚇",t:"MRT",b:"Airport to city 30 min, $1.70 SGD."}],warning:"Strict laws — no gum, no littering, no jaywalking. Fines are heavy. Tap water is safe."},
+  amsterdam:{name:"Amsterdam",country:"Netherlands · Europe",img:"https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=800&q=80",thumb:"https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=400&q=70",tag:"Canal City",info:"This is the place you go to for more about Amsterdam. Stroll along Prinsengracht and grab a stroopwafel with coffee at a canal-side café. Head back 3 hours before your flight. Pickpockets frequent Centraal Station.",tips:[{icon:"🚲",t:"Rent a Bike",b:"Most authentic way to explore. €10–€15."},{icon:"🏛",t:"Rijksmuseum",b:"Rembrandt & Vermeer. Book online."},{icon:"🌷",t:"Keukenhof",b:"March–May tulip season."},{icon:"🧇",t:"Poffertjes",b:"Mini Dutch pancakes at Albert Cuyp market."}],warning:"Cyclists have right of way. Stay on pedestrian paths. Photography of RLD workers is strictly forbidden."},
+  sydney:{name:"Sydney",country:"Australia · Pacific",img:"https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=800&q=80",thumb:"https://images.unsplash.com/photo-1506973035872-a4ec16b8e8d9?w=400&q=70",tag:"Harbour & Sun",info:"This is the place you go to for more about Sydney. Stroll along Circular Quay and grab fresh fish and chips at the Rocks. Head back 3 hours before your flight.",tips:[{icon:"🎭",t:"Opera House",b:"Walk around for free — iconic photo."},{icon:"🏖",t:"Bondi Beach",b:"30 min by bus. Swim between the flags."},{icon:"🌉",t:"Harbour Bridge",b:"Walk across free — stunning views."},{icon:"🦘",t:"Taronga Zoo",b:"Best harbour views with native wildlife."}],warning:"Sun is extremely strong — sunscreen essential. Tipping not customary. Download TripView app."},
+};
+
+/* ═══════ TICKER NEWS ═══════ */
+const TICKER_ITEMS=[
+  {type:'alert',text:'NOTAM: North Atlantic Track closure — eastbound tracks NAT-B and NAT-C suspended until 14:00 UTC. Consider southern routing via Azores.'},
+  {type:'alert',text:'Airspace restriction: Iran FIR active — overflights suspended. Rerouting via Turkey or Saudi Arabia recommended.'},
+  {type:'info',text:'LHR arrivals delayed 45 min due to ATC staffing. Check terminal before departure.'},
+  {type:'ok',text:'Trans-Siberian routes now fully restored following temporary NOTAM D4421/26 lift.'},
+  {type:'alert',text:'DXB → IST corridor: Turkish industrial action causing 60–90 min delays on all TK-operated flights.'},
+  {type:'info',text:'Seasonal typhoon advisory: Flights in/out of NRT and HND subject to rerouting 19–22 Apr.'},
+  {type:'ok',text:'SIN Changi T4 reopened for full operations. Fast track lanes available for all terminals.'},
+  {type:'alert',text:'European ATC strike: Marseille ATC industrial action expected 22 Apr — avoid CDG-BCN corridor.'},
+  {type:'info',text:'New polar route POLAR1 operational — SFO to Seoul KE 051 saving 45 min flight time.'},
+  {type:'alert',text:'Kyiv FIR remains closed. All Ukraine airspace suspended indefinitely — use alternative Eastern European routing.'},
+  {type:'info',text:'JFK Terminal 4 security: 40 min wait times reported. Plan accordingly.'},
+  {type:'ok',text:'BCN and MAD: No disruptions. Excellent hub availability for transatlantic connections today.'},
+];
+
+function buildTicker(){
+  const inner=document.getElementById('ticker-inner');
+  const items=[...TICKER_ITEMS,...TICKER_ITEMS];// duplicate for seamless loop
+  inner.innerHTML=items.map(it=>`
+    <div class="ticker-item">
+      <div class="ti-dot" style="background:${it.type==='alert'?'var(--coral)':it.type==='ok'?'var(--green)':'var(--accent)'}"></div>
+      <span class="${'ti-'+it.type}">${it.text}</span>
+    </div>`).join('');
+}
+buildTicker();
+
+/* ═══════ LIVE TRAVELLERS ═══════ */
+const LT_DATA=[
+  {av:'GH',name:'Giulia H.',route:'LHR → DUB → JFK',status:'In transit · Dublin layover',match:94,col:'#0a84ff'},
+  {av:'JR',name:'James R.',route:'LHR → MAD → EWR',status:'Booked · Departs 17:45',match:87,col:'#30d158'},
+  {av:'YM',name:'Yuki M.',route:'NRT → MNL → SYD',status:'Departed 3h ago',match:82,col:'#bf5af2'},
+  {av:'SC',name:'Sara C.',route:'DXB → CAI → FCO',status:'Checking in now',match:76,col:'#ffd60a'},
+  {av:'MK',name:'Meera K.',route:'LHR → LIS → JFK',status:'Planning · Tomorrow',match:71,col:'#ff453a'},
+  {av:'DT',name:'David T.',route:'SIN → KUL → LHR',status:'In flight · ETA 08:30',match:65,col:'#0a84ff'},
+];
+function buildLT(){
+  document.getElementById('lt-entries').innerHTML=LT_DATA.map(t=>`
+    <div class="lt-row">
+      <div class="lt-av" style="background:${t.col}22;color:${t.col}">${t.av}</div>
+      <div class="lt-info">
+        <div class="lt-name">${t.name}</div>
+        <div class="lt-route">${t.route}</div>
+      </div>
+      <div class="lt-status"><div class="lt-dot"></div>${t.status}</div>
+      <span class="lt-match">${t.match}% route match</span>
+      <button class="lt-connect">Connect</button>
+    </div>`).join('');
+}
+buildLT();
+// Simulate new traveller joining
+setInterval(()=>{
+  const names=['Alex B.','Priya S.','Tom N.','Fatima A.'];
+  const routes=['CDG → MAD → JFK','AMS → DUB → ORD','FRA → IST → DXB'];
+  const n=names[Math.floor(Math.random()*names.length)];
+  const r=routes[Math.floor(Math.random()*routes.length)];
+  const cols=['#0a84ff','#30d158','#bf5af2','#ffd60a'];
+  const c=cols[Math.floor(Math.random()*cols.length)];
+  const av=n.split(' ').map(x=>x[0]).join('');
+  const row=document.createElement('div');row.className='lt-row';
+  row.style.animation='fadeUp .4s ease';
+  row.innerHTML=`<div class="lt-av" style="background:${c}22;color:${c}">${av}</div>
+    <div class="lt-info"><div class="lt-name">${n} <span style="font-size:.6rem;background:var(--green-soft);color:var(--green);padding:1px 6px;border-radius:100px;font-family:'DM Mono',monospace;">NEW</span></div>
+    <div class="lt-route">${r}</div></div>
+    <div class="lt-status"><div class="lt-dot"></div>Just joined</div>
+    <span class="lt-match">${Math.floor(Math.random()*30+55)}% route match</span>
+    <button class="lt-connect">Connect</button>`;
+  const entries=document.getElementById('lt-entries');
+  entries.insertBefore(row,entries.firstChild);
+  if(entries.children.length>8)entries.removeChild(entries.lastChild);
+},12000);
+
+/* ═══════ PARTICLE ENGINE (cursor-local only) ═══════ */
+const pcanvas=document.getElementById('particle-canvas');
+const pctx=pcanvas.getContext('2d');
+let PW,PH;
+function presz(){PW=pcanvas.width=window.innerWidth;PH=pcanvas.height=window.innerHeight;}
+presz();window.addEventListener('resize',presz);
+
+const PCOLS=['#0a84ff','#30d158','#bf5af2','#ffd60a','#ff453a'];
+let particles=[];
+const MOUSE={x:-999,y:-999,active:false};
+let mouseIdleTimer;
+
+function mkP(){
+  const angle=Math.random()*Math.PI*2;
+  const speed=Math.random()*2+.5;
+  return{
+    x:MOUSE.x,y:MOUSE.y,
+    vx:Math.cos(angle)*speed*(Math.random()*.5+.5),
+    vy:Math.sin(angle)*speed*(Math.random()*.5+.5)-1.5,
+    r:Math.random()*2.5+.8,
+    color:PCOLS[Math.floor(Math.random()*PCOLS.length)],
+    life:1,decay:Math.random()*.015+.008,
+    trail:[],
+  };
+}
+let spawnTimer=0;
+function drawParticles(ts){
+  pctx.clearRect(0,0,PW,PH);
+  // Spawn near cursor only when mouse moving
+  if(MOUSE.active){
+    spawnTimer++;
+    if(spawnTimer%2===0&&particles.length<80){
+      for(let i=0;i<2;i++)particles.push(mkP());
+    }
+  }
+  particles=particles.filter(p=>p.life>0);
+  particles.forEach(p=>{
+    p.vx*=.97;p.vy*=.97;p.vy-=.04;
+    p.x+=p.vx;p.y+=p.vy;
+    p.life-=p.decay;
+    p.trail.push({x:p.x,y:p.y});
+    if(p.trail.length>12)p.trail.shift();
+    // Trail
+    if(p.trail.length>2){
+      pctx.beginPath();pctx.moveTo(p.trail[0].x,p.trail[0].y);
+      for(let t=1;t<p.trail.length;t++)pctx.lineTo(p.trail[t].x,p.trail[t].y);
+      pctx.strokeStyle=p.color;pctx.globalAlpha=p.life*.12;
+      pctx.lineWidth=p.r*.7;pctx.lineCap='round';pctx.stroke();pctx.globalAlpha=1;
+    }
+    // Core glow
+    pctx.save();pctx.globalAlpha=p.life*.75;
+    const g=pctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);
+    g.addColorStop(0,p.color);g.addColorStop(1,'transparent');
+    pctx.fillStyle=g;pctx.beginPath();pctx.arc(p.x,p.y,p.r*3,0,Math.PI*2);pctx.fill();
+    pctx.fillStyle=p.color;pctx.beginPath();pctx.arc(p.x,p.y,p.r,0,Math.PI*2);pctx.fill();
+    pctx.restore();
+  });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+/* ═══════ CURSOR + WAKE ═══════ */
+const ring=document.getElementById('cur-ring');
+const cdot=document.getElementById('cur-dot');
+const sleepEl=document.getElementById('sleep');
+const pageEl=document.getElementById('page');
+const stripEl=document.getElementById('att-strip');
+let awakened=false;
+
+window.addEventListener('mousemove',e=>{
+  MOUSE.x=e.clientX;MOUSE.y=e.clientY;MOUSE.active=true;
+  ring.style.left=e.clientX+'px';ring.style.top=e.clientY+'px';
+  cdot.style.left=e.clientX+'px';cdot.style.top=e.clientY+'px';
+  clearTimeout(mouseIdleTimer);
+  mouseIdleTimer=setTimeout(()=>{MOUSE.active=false;},200);
+  if(!awakened){
+    awakened=true;
+    sleepEl.classList.add('gone');
+    setTimeout(()=>{pageEl.classList.add('show');},800);
+    setTimeout(()=>{stripEl.classList.add('show');},1300);
+  }
+});
+window.addEventListener('click',e=>{
+  const r=document.createElement('div');r.className='ripple';
+  r.style.left=e.clientX+'px';r.style.top=e.clientY+'px';
+  r.style.width=r.style.height='36px';
+  document.body.appendChild(r);setTimeout(()=>r.remove(),1200);
+});
+
+/* Cursor size on hover */
+document.querySelectorAll('button,a,.qp,.attcard,.ltcard,.lt-row').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{ring.style.width='48px';ring.style.height='48px';ring.style.borderColor='var(--accent)';});
+  el.addEventListener('mouseleave',()=>{ring.style.width='32px';ring.style.height='32px';ring.style.borderColor='var(--accent)';});
+});
+
+/* ═══════ THEME ═══════ */
+const themeToggle=document.getElementById('theme-toggle');
+const themeLabel=document.getElementById('theme-label');
+function applyTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  themeLabel.textContent=t==='dark'?'Dark':'Light';
+  localStorage.setItem('dst-theme',t);
+}
+applyTheme(localStorage.getItem('dst-theme')||'dark');
+themeToggle.addEventListener('click',()=>{
+  applyTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark');
+});
+
+/* ═══════ TEXTAREA ═══════ */
+const ta=document.getElementById('situation-ta');
+const btn=document.getElementById('submit-btn');
+const cc=document.getElementById('char-count');
+ta.addEventListener('input',()=>{
+  ta.value=ta.value.slice(0,600);
+  cc.textContent=`${ta.value.length} / 600`;
+  btn.disabled=ta.value.trim().length<5;
+});
+ta.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.metaKey)analyse();});
+document.querySelectorAll('.qp').forEach(p=>{
+  p.addEventListener('click',()=>{
+    const map={
+      '✈ London to NYC — airspace closure':"I'm stuck in London Heathrow. All direct transatlantic flights are cancelled due to an airspace restriction over the North Atlantic. I need to reach New York JFK as fast as possible. Speed over cost.",
+      '💸 Budget: Tokyo to Sydney':"Flying Tokyo to Sydney in two weeks. Budget is my absolute priority. Flexible on dates by ±3 days. Don't mind a longer journey if it saves real money.",
+      '🗺 Scenic NYC to San Francisco':"Traveling from New York to San Francisco next month on a budget. I want to avoid major highways and see nature. What's the best route and how can I stay safe traveling alone?",
+      '👨‍👩‍👧‍👦 Family reroute — Dubai to Rome':"We're a family of four — two adults, kids aged 6 and 9 — trying to get from Dubai to Rome. Our Istanbul connection got cancelled. Need something today or tomorrow, keeping the group together."
+    };
+    ta.value=map[p.textContent]||'';
+    cc.textContent=`${ta.value.length} / 600`;
+    btn.disabled=false;ta.focus();
+  });
+});
+
+/* ═══════ CLAUDE API ═══════ */
+const SYSTEM=`You are an expert AI travel routing assistant. Respond ONLY with valid JSON — no markdown, no backticks. Schema:
+{"summary":"One empathetic sentence","bestSolution":{"title":"Route name with real airport codes","description":"2-3 sentences","cost":"e.g. £820–£1,140","time":"e.g. ~10h 40m","modality":"e.g. Flight + Train","confidence":"High|Medium|Low","highlights":["point1","point2","point3"]},"alternatives":[{"title":"Name","via":"e.g. LHR→DUB→JFK","cost":"...","time":"...","tradeoff":"one sentence","badge":"FASTEST|CHEAPEST|SCENIC|BALANCED"},{"title":"...","via":"...","cost":"...","time":"...","tradeoff":"...","badge":"..."}],"safetyTips":["tip1","tip2","tip3"],"articles":[{"title":"...","description":"one sentence","readTime":"5 min read","category":"Safety|Budget|Planning|Culture|Adventure"},{"title":"...","description":"...","readTime":"...","category":"..."},{"title":"...","description":"...","readTime":"...","category":"..."}],"communityInsights":{"activeUsers":4,"insight":"one sentence","tips":["tip1","tip2"]},"disclaimer":"Prices and times are estimates subject to change."}
+Use real airport codes, realistic prices, specific routes. Exactly 2 alternatives, exactly 3 articles.`;
+
+btn.addEventListener('click',analyse);
+async function analyse(){
+  const q=ta.value.trim();if(q.length<5)return;
+  showLoading(true);clearResults();
+  try{
+    const r=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,system:SYSTEM,messages:[{role:'user',content:q}]})
+    });
+    const d=await r.json();
+    if(!d.content)throw new Error(d.error?.message||'API error');
+    const raw=d.content.map(b=>b.text||'').join('').trim();
+    const json=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    render(json);
+  }catch(e){showErr('Could not analyse route. Check your input and try again. ('+e.message+')');}
+  finally{showLoading(false);}
+}
+
+function render(d){
+  // Summary
+  document.getElementById('ai-sum').innerHTML=`<strong style="color:var(--accent)">Route Intelligence</strong> — ${esc(d.summary)}`;
+  // Best
+  const c=d.bestSolution;
+  document.getElementById('best-title').innerHTML=esc(c.title)+`<span class="conf ${c.confidence==='High'?'ch':c.confidence==='Medium'?'cm':'cl'}">${esc(c.confidence)}</span>`;
+  document.getElementById('best-desc').textContent=c.description;
+  document.getElementById('best-meta').innerHTML=[['Cost',c.cost],['Time',c.time],['Mode',c.modality]].map(([l,v])=>`<div class="mchip"><div class="mchip-l">${l}</div><div class="mchip-v">${esc(v)}</div></div>`).join('');
+  document.getElementById('best-hl').innerHTML=(c.highlights||[]).map(h=>`<li>${esc(h)}</li>`).join('');
+  // Alts
+  const bm={FASTEST:'bf',CHEAPEST:'bc',SCENIC:'bs',BALANCED:'bb'};
+  document.getElementById('alt-grid').innerHTML=(d.alternatives||[]).map(a=>`
+    <div class="acard"><span class="abadge ${bm[a.badge]||'bb'}">${esc(a.badge)}</span>
+    <div class="atitle">${esc(a.title)}</div><div class="avia">${esc(a.via)}</div>
+    <div class="astats"><div><div class="asl">Cost</div><div class="asv">${esc(a.cost)}</div></div>
+    <div><div class="asl">Time</div><div class="asv">${esc(a.time)}</div></div></div>
+    <div class="ato">${esc(a.tradeoff)}</div></div>`).join('');
+  // Safety
+  document.getElementById('slist').innerHTML=(d.safetyTips||[]).map(t=>`<div class="sitem">${esc(t)}</div>`).join('');
+  // Articles
+  const cm2={Safety:'sa',Budget:'bu',Planning:'pl',Culture:'cu',Adventure:'ad'};
+  document.getElementById('art-grid').innerHTML=(d.articles||[]).map(a=>`
+    <div class="artcard"><span class="artcat ${cm2[a.category]||'pl'}">${esc(a.category)}</span>
+    <div class="arttitle">${esc(a.title)}</div><div class="artdesc">${esc(a.description)}</div>
+    <div class="artread">${esc(a.readTime)}</div></div>`).join('');
+  // Community
+  const ci=d.communityInsights||{};
+  document.getElementById('comm-cnt').textContent=`${ci.activeUsers||0} active`;
+  document.getElementById('comm-ins').textContent=ci.insight||'';
+  document.getElementById('comm-tips').innerHTML=(ci.tips||[]).map(t=>`<div class="ctip">${esc(t)}</div>`).join('');
+  document.getElementById('disc').textContent='⚠ '+d.disclaimer;
+  // ML
+  const routes=[{name:c.title,cs:.92,ts:.85,fs:.90},...(d.alternatives||[]).map((a,i)=>({name:a.title,cs:.73-i*.14,ts:.77-i*.11,fs:.69-i*.09}))];
+  renderML(d,routes);
+  document.getElementById('ml-sec').style.display='block';
+  document.getElementById('results').classList.add('show');
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* ═══════ ML PANELS ═══════ */
+let wts={cost:.4,time:.35,feasibility:.25};
+function renderML(d,routes){
+  renderOpt(routes);renderSim();renderRec(d.articles||[]);
+}
+function renderOpt(routes){
+  const wr=document.getElementById('wrow');
+  wr.innerHTML=Object.keys(wts).map(k=>`
+    <div class="wi"><div class="wl"><span>${k}</span><span class="wv" id="wv-${k}">${Math.round(wts[k]*100)}%</span></div>
+    <input type="range" min="10" max="80" step="5" value="${Math.round(wts[k]*100)}" data-k="${k}"/></div>`).join('');
+  wr.querySelectorAll('input').forEach(inp=>{
+    inp.addEventListener('input',function(){
+      const k=this.dataset.k,v=parseInt(this.value)/100;
+      const rem=1-v,oth=Object.keys(wts).filter(x=>x!==k);
+      const sum=oth.reduce((s,x)=>s+wts[x],0);
+      oth.forEach(x=>wts[x]=sum>0?+(wts[x]/sum*rem).toFixed(2):+(rem/2).toFixed(2));
+      wts[k]=v;
+      wr.querySelectorAll('input').forEach(ii=>{document.getElementById('wv-'+ii.dataset.k).textContent=Math.round(wts[ii.dataset.k]*100)+'%';ii.value=Math.round(wts[ii.dataset.k]*100);});
+      updOpt(routes);
+    });
+  });
+  updOpt(routes);
+}
+function updOpt(routes){
+  const sc=routes.map(r=>({...r,score:r.cs*wts.cost+r.ts*wts.time+r.fs*wts.feasibility})).sort((a,b)=>b.score-a.score);
+  document.getElementById('orows').innerHTML=sc.map((r,i)=>`
+    <div class="orow ${i===0?'top':''}">
+      <div class="ork">${i===0?'★':'#'+(i+1)}</div>
+      <div class="bg">
+        <div class="orn">${esc(r.name)}</div>
+        ${[['cost',r.cs,'var(--green)'],['time',r.ts,'var(--accent)'],['feasibility',r.fs,'var(--gold)']].map(([l,v,c])=>`
+          <div class="brow"><div class="brh"><span>${l}</span><span>${Math.round(v*100)}%</span></div>
+          <div class="bt"><div class="bf2" style="width:${v*100}%;background:${c}"></div></div></div>`).join('')}
+      </div>
+      <div style="text-align:center;min-width:34px;"><div class="osn">${Math.round(sc[i].score*100)}</div><div class="osl">score</div></div>
+    </div>`).join('');
+}
+function renderSim(){
+  const tr=[{av:'GH',name:'Giulia H.',route:'LHR→DUB→JFK',sim:.94,col:'#0a84ff',status:'In transit'},
+    {av:'JR',name:'James R.',route:'LHR→MAD→EWR',sim:.87,col:'#30d158',status:'Planning'},
+    {av:'YM',name:'Yuki M.',route:'LHR→ICN→JFK',sim:.76,col:'#bf5af2',status:'Departed'},
+    {av:'SC',name:'Sara C.',route:'LHR→LIS→JFK',sim:.71,col:'#ffd60a',status:'Booked'}];
+  const svg=document.getElementById('sim-svg');
+  svg.innerHTML=`<circle cx="160" cy="47" r="10" fill="var(--accent)" opacity=".9"/>
+    <text x="160" y="51" text-anchor="middle" font-size="7" fill="white" font-weight="600">YOU</text>`+
+    tr.map((t,i)=>{const a=(i/tr.length)*Math.PI*2-Math.PI/5,dist=(1-t.sim)*110+42,tx=160+Math.cos(a)*dist,ty=47+Math.sin(a)*dist;
+      return `<line x1="160" y1="47" x2="${tx}" y2="${ty}" stroke="${t.col}" stroke-opacity="${t.sim*.35}" stroke-width="${t.sim*1.6}" stroke-dasharray="3,4"/>
+        <circle cx="${tx}" cy="${ty}" r="${6.5*t.sim+2}" fill="${t.col}" opacity=".85"/>
+        <text x="${tx}" y="${ty+3}" text-anchor="middle" font-size="6" fill="black" font-weight="600">${t.av}</text>
+        <text x="${tx}" y="${ty-13}" text-anchor="middle" font-size="7" fill="var(--text3)">${Math.round(t.sim*100)}%</text>`;
+    }).join('');
+  document.getElementById('sim-list').innerHTML=tr.map(t=>`
+    <div class="trow">
+      <div class="tav" style="background:${t.col}22;color:${t.col}">${t.av}</div>
+      <div style="flex:1"><div class="tn">${t.name}</div><div class="tr2">${t.route}</div></div>
+      <div><span class="sbadge" style="background:${t.col}18;color:${t.col}">${Math.round(t.sim*100)}% match</span><div class="tstat">${t.status}</div></div>
+    </div>`).join('');
+}
+let recFilt='All';
+function renderRec(arts){
+  const cats=['All','Safety','Budget','Planning','Culture','Adventure'];
+  const cc2={Safety:'var(--coral)',Budget:'var(--green)',Planning:'var(--accent)',Culture:'var(--purple)',Adventure:'var(--gold)'};
+  document.getElementById('rfilt').innerHTML=cats.map(c=>`<button class="fb ${c===recFilt?'on':''}" data-c="${c}">${c}</button>`).join('');
+  document.querySelectorAll('.fb').forEach(b=>b.addEventListener('click',function(){recFilt=this.dataset.c;renderRec(arts);}));
+  const filtered=recFilt==='All'?arts:arts.filter(a=>a.category===recFilt);
+  const sc=filtered.map((a,i)=>({...a,cf:+(0.94-i*.07).toFixed(2),sem:+(0.91-i*.06).toFixed(2),fin:+(0.92-i*.065).toFixed(2)}));
+  document.getElementById('rlist').innerHTML=sc.length?sc.map((a,i)=>`
+    <div class="rrow"><div class="rrk">#${i+1}</div>
+    <div style="flex:1"><div style="display:flex;align-items:center;gap:5px;margin-bottom:2px;">
+      <span style="font-size:.58rem;padding:1px 6px;border-radius:100px;background:${(cc2[a.category]||'var(--accent)')}18;color:${cc2[a.category]||'var(--accent)'};text-transform:uppercase;letter-spacing:.04em;">${esc(a.category)}</span>
+      <span style="font-size:.78rem;color:var(--text)">${esc(a.title)}</span></div>
+      <div class="rsc"><span class="rse">CF <b>${Math.round(a.cf*100)}%</b></span><span class="rse">Sem <b>${Math.round(a.sem*100)}%</b></span><span class="rse" style="color:var(--accent)">Final <b>${Math.round(a.fin*100)}%</b></span></div>
+    </div><div class="rrd">${esc(a.readTime)}</div></div>`).join('')
+    :'<div style="font-size:.75rem;color:var(--text3);padding:.4rem 0;">No articles in this category.</div>';
+}
+
+/* ═══════ ATTRACTION STRIP ═══════ */
+Object.entries(DESTS).forEach(([k,d])=>{
+  const c=document.createElement('div');c.className='attcard';
+  c.innerHTML=`<img src="${d.thumb}" alt="${d.name}" loading="lazy"/><div class="attlbl"><span class="atttag">${d.tag}</span>${d.name}</div>`;
+  c.addEventListener('click',()=>openDest(k));
+  stripEl.appendChild(c);
+});
+
+/* ═══════ DEST MODAL ═══════ */
+const destModal=document.getElementById('dest-modal');
+function openDest(k){
+  const d=DESTS[k];if(!d)return;
+  document.getElementById('dest-img').src=d.img;
+  document.getElementById('dest-name').textContent=d.name;
+  document.getElementById('dest-ctry').textContent=d.country;
+  document.getElementById('dest-info').textContent=d.info;
+  document.getElementById('dest-tips-grid').innerHTML=d.tips.map(t=>`<div class="tip-chip"><span class="tip-icon">${t.icon}</span><div class="tip-body2"><strong>${t.t}</strong>${t.b}</div></div>`).join('');
+  document.getElementById('dest-wt').textContent=d.warning;
+  destModal.classList.add('open');document.body.style.cursor='auto';
+}
+document.getElementById('dest-cls').addEventListener('click',()=>{destModal.classList.remove('open');document.body.style.cursor='none';});
+destModal.addEventListener('click',e=>{if(e.target===destModal){destModal.classList.remove('open');document.body.style.cursor='none';}});
+
+/* ═══════ FLIGHTS MODAL ═══════ */
+const flightsModal=document.getElementById('flights-modal');
+document.getElementById('flights-btn').addEventListener('click',()=>{flightsModal.classList.add('open');document.body.style.cursor='auto';});
+document.getElementById('fp-close').addEventListener('click',()=>{flightsModal.classList.remove('open');document.body.style.cursor='none';});
+flightsModal.addEventListener('click',e=>{if(e.target===flightsModal){flightsModal.classList.remove('open');document.body.style.cursor='none';}});
+
+// Tabs
+document.querySelectorAll('.fp-tab').forEach(tab=>{
+  tab.addEventListener('click',function(){
+    document.querySelectorAll('.fp-tab').forEach(t=>t.classList.remove('on'));
+    this.classList.add('on');
+    document.getElementById('tab-fr24').style.display=this.dataset.tab==='fr24'?'block':'none';
+    document.getElementById('tab-map').style.display=this.dataset.tab==='map'?'flex':'none';
+    if(this.dataset.tab==='map')initMapCanvas();
+  });
+});
+
+// Simple map canvas for "Route Map" tab
+const MOCK_FLIGHTS=[
+  {fn:'BA117',from:'LHR',to:'JFK',prog:.45,lat1:51.5,lon1:-0.5,lat2:40.6,lon2:-73.8,alt:'37,000ft',spd:'520kts',stat:'En Route'},
+  {fn:'EK202',from:'DXB',to:'JFK',prog:.28,lat1:25.3,lon1:55.4,lat2:40.6,lon2:-73.8,alt:'38,000ft',spd:'510kts',stat:'En Route'},
+  {fn:'SQ321',from:'SIN',to:'LHR',prog:.62,lat1:1.4,lon1:103.9,lat2:51.5,lon2:-0.5,alt:'39,000ft',spd:'535kts',stat:'En Route'},
+  {fn:'QF1',from:'SYD',to:'DXB',prog:.35,lat1:-33.9,lon1:151.2,lat2:25.3,lon2:55.4,alt:'37,500ft',spd:'498kts',stat:'En Route'},
+  {fn:'AA100',from:'JFK',to:'LHR',prog:.75,lat1:40.6,lon1:-73.8,lat2:51.5,lon2:-0.5,alt:'36,000ft',spd:'505kts',stat:'En Route'},
+  {fn:'NH215',from:'NRT',to:'LAX',prog:.55,lat1:35.8,lon1:140.4,lat2:33.9,lon2:-118.4,alt:'38,500ft',spd:'525kts',stat:'En Route'},
+];
+let mapInit=false;
+function initMapCanvas(){
+  if(mapInit)return;mapInit=true;
+  const cvs=document.getElementById('fp-canvas');
+  const c=cvs.getContext('2d');
+  // Build list
+  document.getElementById('fp-flist').innerHTML=MOCK_FLIGHTS.map(f=>`
+    <div class="fpl-row">
+      <span class="fpl-fn">${f.fn}</span>
+      <span class="fpl-route">${f.from} → ${f.to}</span>
+      <span class="fpl-alt">${f.alt}</span>
+      <span class="fpl-speed">${f.spd}</span>
+      <span class="fpl-stat">${f.stat}</span>
+    </div>`).join('');
+  function lerp(a,b,t){return a+(b-a)*t;}
+  function project(lat,lon,w,h){
+    const x=(lon+180)/360*w;const y=(90-lat)/180*h;return{x,y};
+  }
+  function drawMap(){
+    const w=cvs.offsetWidth,h=cvs.offsetHeight;
+    if(cvs.width!==w||cvs.height!==h){cvs.width=w;cvs.height=h;}
+    c.clearRect(0,0,w,h);
+    // Ocean bg
+    c.fillStyle='#050510';c.fillRect(0,0,w,h);
+    // Grid
+    c.strokeStyle='rgba(10,132,255,.07)';c.lineWidth=.5;
+    for(let lng=-180;lng<=180;lng+=30){const{x}=project(0,lng,w,h);c.beginPath();c.moveTo(x,0);c.lineTo(x,h);c.stroke();}
+    for(let lat=-90;lat<=90;lat+=30){const{y}=project(lat,0,w,h);c.beginPath();c.moveTo(0,y);c.lineTo(w,y);c.stroke();}
+    // Simple landmass rough shapes (very approximate)
+    c.fillStyle='rgba(20,30,20,.8)';
+    // North America rough
+    c.beginPath();
+    [{lat:70,lon:-140},{lat:60,lon:-65},{lat:25,lon:-80},{lat:15,lon:-90},{lat:60,lon:-140}].forEach((p,i)=>{const pt=project(p.lat,p.lon,w,h);i===0?c.moveTo(pt.x,pt.y):c.lineTo(pt.x,pt.y);});
+    c.closePath();c.fill();
+    // Europe rough
+    c.beginPath();
+    [{lat:72,lon:-10},{lat:72,lon:30},{lat:35,lon:30},{lat:35,lon:-10}].forEach((p,i)=>{const pt=project(p.lat,p.lon,w,h);i===0?c.moveTo(pt.x,pt.y):c.lineTo(pt.x,pt.y);});
+    c.closePath();c.fill();
+    // Asia rough
+    c.beginPath();
+    [{lat:72,lon:30},{lat:72,lon:145},{lat:10,lon:145},{lat:10,lon:30}].forEach((p,i)=>{const pt=project(p.lat,p.lon,w,h);i===0?c.moveTo(pt.x,pt.y):c.lineTo(pt.x,pt.y);});
+    c.closePath();c.fill();
+    // Africa
+    c.beginPath();
+    [{lat:35,lon:-20},{lat:35,lon:50},{lat:-35,lon:50},{lat:-35,lon:-20}].forEach((p,i)=>{const pt=project(p.lat,p.lon,w,h);i===0?c.moveTo(pt.x,pt.y):c.lineTo(pt.x,pt.y);});
+    c.closePath();c.fill();
+    // Aus
+    c.beginPath();
+    [{lat:-15,lon:115},{lat:-15,lon:155},{lat:-40,lon:155},{lat:-40,lon:115}].forEach((p,i)=>{const pt=project(p.lat,p.lon,w,h);i===0?c.moveTo(pt.x,pt.y):c.lineTo(pt.x,pt.y);});
+    c.closePath();c.fill();
+    const now=Date.now()/8000;
+    MOCK_FLIGHTS.forEach((f,fi)=>{
+      const anim=(f.prog+((now+fi*.3)%1-f.prog)*.15)%1;
+      const p1=project(f.lat1,f.lon1,w,h);
+      const p2=project(f.lat2,f.lon2,w,h);
+      // Path
+      c.beginPath();c.moveTo(p1.x,p1.y);c.quadraticCurveTo((p1.x+p2.x)/2,(p1.y+p2.y)/2-h*.08,p2.x,p2.y);
+      c.strokeStyle='rgba(10,132,255,.2)';c.lineWidth=1;c.stroke();
+      // Plane dot
+      const px=lerp(p1.x,p2.x,f.prog);const py=lerp(p1.y,p2.y,f.prog)-(Math.sin(f.prog*Math.PI)*(h*.06));
+      c.save();
+      const g=c.createRadialGradient(px,py,0,px,py,8);
+      g.addColorStop(0,'#0a84ff');g.addColorStop(1,'transparent');
+      c.fillStyle=g;c.beginPath();c.arc(px,py,8,0,Math.PI*2);c.fill();
+      c.fillStyle='#fff';c.beginPath();c.arc(px,py,2.5,0,Math.PI*2);c.fill();
+      c.restore();
+      // Label
+      c.font='bold 8px DM Mono,monospace';c.fillStyle='rgba(255,255,255,.6)';
+      c.fillText(f.fn,px+6,py-5);
+    });
+    requestAnimationFrame(drawMap);
+  }
+  drawMap();
+}
+
+/* ═══════ HELPERS ═══════ */
+function showLoading(s){
+  document.getElementById('loading').className=s?'show':'';
+  btn.disabled=s;btn.textContent=s?'Analysing…':'Analyse Route →';
+}
+function clearResults(){
+  document.getElementById('results').classList.remove('show');
+  document.getElementById('err-box').classList.remove('show');
+}
+function showErr(m){
+  const e=document.getElementById('err-box');
+  e.textContent=m;e.classList.add('show');
+}
+function esc(s){if(!s)return'';return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    destModal.classList.remove('open');
+    flightsModal.classList.remove('open');
+    document.body.style.cursor='none';
+  }
+});
+</script>
+</body>
+</html>

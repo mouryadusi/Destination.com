@@ -1,13 +1,15 @@
 Hi Grandma! 👋
 
-Do you remember in the last month my flight was cancelled and I had a tough time reaching home.
+Do you remember,last month my flight was cancelled and I had a tough time reaching home.
 I was helpless. Likewise millions of people who had travel plans were.
+Everyone were stuck. Flights are grounded.
 
 You know how sometimes flights get cancelled and you have no idea what to do next?
 Like when a storm closes an airport and everyone is just standing around confused
 Or maybe sometimes you have to travel for more than a day to reach the airport only to know that the airport is closed or maybe the flight is cancelled. How disappointing it would be. Isn't it? 
+But it is not always that every flight is grounded. There will always be a way out to reach back home. Maybe by skipping the layover or choosing an alternative layover with a different airline or maybe even a direct flight.
 
-If you knew it beforehand you'd definitely book a different airline or on a different date. 
+If you knew which flight would not take off beforehand you'd definitely book a different airline or on a different date. 
 
 If there was someone who knew this flight wouldnt take off or maybe the weather would not support or maybe analyze couple of other flights and tell us which flight would take off from any different city or place, it would be very helpful for all of us. Isnt it?
 
@@ -18,9 +20,10 @@ If there was someone who knew this flight wouldnt take off or maybe the weather 
 
 ## What does it do?
 
-You type something like:
+I have built a website in which You type something like:
 
-> *"I'm stuck in Dubai and my flight to New York got cancelled. Help!"* or Maybe something like due to the airspace restriction my flight to the India got cancelled and I want to fly back home somehow, help me how can I reach home.
+> *"I'm stuck in Dubai and my flight to New York got cancelled. Help!"*
+> or *"Maybe something like due to the airspace restriction my flight to the India got cancelled and I want to fly back home somehow, help me how can I reach home?"*
 
 And the website figures out other ways to get you there.
 

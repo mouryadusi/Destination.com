@@ -47,17 +47,7 @@ You know this game when the internet goes off We get a dinosaur? I love that gam
 if you spot a flight right on top of you and you want to know which flight it is and where it is flying from and where it is flying to and you want to know what flight it is? My website got it all.
 I also got inspired from the Apple websites minimalistic nature. i wanted my website to be very minimalistic but have a lot of content and can help out many people. I also gave it a dark mode and light mode. Animations for the cursors. I loved the time building this website using everything I have learned in my classroom.
 
-## Did I build all of this myself?
-
-Honestly? Most of it, yes.
-
-I wrote all the code that makes the website look the way it does —
-the dark screen, the glowing cursor, the animated plane trails.
-
-The "smart" part — answering your travel questions — uses an AI tool I connected to.
----
-
-## Does it actually work?
+## Does it actually work? Where can I try it?
 
 Yes! You can try it at:
 
@@ -66,12 +56,7 @@ Yes! You can try it at:
 Type something like "I want to fly from Dallas to Mumbai" and it will give you real options.
 
 ---
-
-## One honest thing
-
-The flight prices and times it gives you are **estimates** — not real bookings.
-Think of it like a very smart friend giving advice, not a travel agent with a ticket machine.
-Always double-check before you book anything for real.
+Please tell me how you liked my website
 
 ---
 

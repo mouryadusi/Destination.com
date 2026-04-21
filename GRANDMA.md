@@ -2,11 +2,15 @@ Hi Grandma! 👋
 
 Do you remember in the last month my flight was cancelled and I had a tough time reaching home.
 I was helpless. Likewise millions of people who had travel plans were.
+
 You know how sometimes flights get cancelled and you have no idea what to do next?
-Like when a storm closes an airport and everyone is just standing around confused?
+Like when a storm closes an airport and everyone is just standing around confused
 Or maybe sometimes you have to travel for more than a day to reach the airport only to know that the airport is closed or maybe the flight is cancelled. How disappointing it would be. Isn't it? 
+
 If you knew it beforehand you'd definitely book a different airline or on a different date. 
+
 If there was someone who knew this flight wouldnt take off or maybe the weather would not support or maybe analyze couple of other flights and tell us which flight would take off from any different city or place, it would be very helpful for all of us. Isnt it?
+
 
 **That's the problem I solved.**
 
@@ -29,8 +33,6 @@ It tells you:
 
 It also has a little assistant you can **talk to out loud** — like Siri, but for travel.
 You just say your question and it talks back to you.I have named it Aria. It is your personal AI travel Assistant.
-
----
 
 ## How does it work?
 
